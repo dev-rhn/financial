@@ -3,8 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\AccountBalanceWidget;
-use App\Filament\Widgets\CashFlowChartWidget;
-use App\Filament\Widgets\CategorySpendingWidget;
 use App\Filament\Widgets\FinancialOverviewWidget;
 use App\Filament\Widgets\RecentTransactionWidget;
 use Filament\Http\Middleware\Authenticate;
@@ -15,7 +13,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
