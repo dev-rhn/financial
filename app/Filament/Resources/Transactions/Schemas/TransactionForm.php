@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Transactions\Schemas;
 
 use App\Models\Account;
 use App\Models\Category;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -126,9 +127,10 @@ class TransactionForm
                 // Split Transaction Section
                 Section::make('Kategori Transaksi')
                     ->schema([
-                        ToggleButtons::make('is_split')
+                        Checkbox::make('is_split')
                             ->label('Split Transaksi (Beberapa Kategori)')
                             ->live()
+                            ->default(false)
                             ->visible(fn (Get $get) => in_array($get('type'), ['income', 'expense'])),
  
                         // Single category (non-split)
