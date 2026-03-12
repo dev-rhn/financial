@@ -6,10 +6,11 @@ use App\Models\Category;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryForm
 {
@@ -39,7 +40,7 @@ class CategoryForm
  
                         Select::make('parent_id')
                             ->label('Sub-kategori dari')
-                            ->options(fn () => Category::where('user_id', auth()->id())
+                            ->options(fn () => Category::where('user_id', Auth::user()->id)
                                 ->whereNull('parent_id')
                                 ->pluck('name', 'id')
                             )
