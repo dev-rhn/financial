@@ -48,7 +48,7 @@ class AccountsTable
                         'warning' => 'cash',
                     ]),
  
-                TextColumn::make('provider')
+                TextColumn::make('provider.name')
                     ->label('Provider')
                     ->placeholder('—'),
  

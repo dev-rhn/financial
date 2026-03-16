@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Accounts\Schemas;
 
+use App\Models\Provider;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -38,42 +39,26 @@ class AccountForm
                             ->afterStateUpdated(fn ($state, Set $set) =>
                                 $state === 'cash' ? $set('provider', null) : null
                             ),
- 
-                        Select::make('provider')
+
+                        Select::make('provider_id') 
                             ->label('Provider / Bank')
-                            ->options(function (Get $get) {
-                                return match($get('type')) {
-                                    'bank' => [
-                                        'BCA' => 'BCA',
-                                        'Mandiri' => 'Mandiri',
-                                        'BNI' => 'BNI',
-                                        'BRI' => 'BRI',
-                                        'CIMB Niaga' => 'CIMB Niaga',
-                                        'Permata' => 'Permata',
-                                        'BTN' => 'BTN',
-                                        'Lainnya' => 'Lainnya',
-                                    ],
-                                    'ewallet' => [
-                                        'GoPay' => 'GoPay',
-                                        'OVO' => 'OVO',
-                                        'DANA' => 'DANA',
-                                        'ShopeePay' => 'ShopeePay',
-                                        'LinkAja' => 'LinkAja',
-                                        'Lainnya' => 'Lainnya',
-                                    ],
-                                    default => [],
-                                };
-                            })
-                            ->visible(fn (Get $get) => $get('type') !== 'cash')
-                            ->searchable(),
+                            ->options(fn (Get $get) => Provider::where('type', $get('type'))
+                                ->where('is_active', true)
+                                ->orderBy('sort_order')
+                                ->pluck('name', 'id')
+                            )
+                            ->searchable()
+                            ->visible(fn (Get $get) => $get('type') !== 'cash'),
  
                         TextInput::make('account_number')
                             ->label('Nomor Rekening / Akun')
                             ->placeholder('Contoh: 1234567890')
                             ->visible(fn (Get $get) => $get('type') === 'bank')
-                            ->maxLength(50),
+                            ->maxLength(50)
+                            ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns(3)
+                    ->columnSpanFull(),
  
                 Section::make('Saldo & Tampilan')
                     ->schema([
@@ -97,7 +82,8 @@ class AccountForm
                             ->rows(2)
                             ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }
