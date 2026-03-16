@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->enum('type', ['bank', 'ewallet', 'cash']);
-            $table->string('provider')->nullable(); // BCA, Mandiri, GoPay, etc.
+            $table->foreignId('provider_id')->nullable()->constrained('providers')->nullOnDelete();
             $table->string('account_number')->nullable();
             $table->decimal('initial_balance', 15, 2)->default(0);
             $table->decimal('current_balance', 15, 2)->default(0);

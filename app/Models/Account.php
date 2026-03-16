@@ -16,7 +16,7 @@ class Account extends Model
         'user_id',
         'name',
         'type',
-        'provider',
+        'provider_id',
         'account_number',
         'initial_balance',
         'current_balance',
@@ -42,6 +42,11 @@ class Account extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function provider(): BelongsTo
+    {
+        return $this->belongsTo(Provider::class, 'provider_id');
+    }
+
     public function incomingTransfers(): HasMany
     {
         return $this->hasMany(Transaction::class, 'destination_account_id');
@@ -54,23 +59,6 @@ class Account extends Model
             'ewallet' => 'E-Wallet',
             'cash' => 'Tunai',
             default => $this->type,
-        };
-    }
-
-    public function getProviderIcon(): string
-    {
-        return match(strtolower($this->provider ?? '')) {
-            'bca' => 'heroicon-o-building-library',
-            'mandiri' => 'heroicon-o-building-library',
-            'bni' => 'heroicon-o-building-library',
-            'bri' => 'heroicon-o-building-library',
-            'gopay' => 'heroicon-o-device-phone-mobile',
-            'ovo' => 'heroicon-o-device-phone-mobile',
-            'dana' => 'heroicon-o-device-phone-mobile',
-            'shopeepay' => 'heroicon-o-device-phone-mobile',
-            default => $this->type === 'cash'
-                ? 'heroicon-o-banknotes'
-                : 'heroicon-o-credit-card',
         };
     }
 

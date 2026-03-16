@@ -45,8 +45,10 @@ class TransactionForm
                             ->required()
                             ->live()
                             ->inline()
+                            ->columns(3)
                             ->columnSpanFull(),
-                    ]),
+                    ])
+                    ->columnSpanFull(),
  
                 Section::make('Detail Transaksi')
                     ->schema([
@@ -77,6 +79,12 @@ class TransactionForm
                             )
                             ->searchable()
                             ->visible(fn (Get $get) => $get('type') === 'transfer'),
+
+                        TextInput::make('description')
+                            ->label('Deskripsi')
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('Contoh: Gaji Bulan Ini, Makan Siang, dll.'),
  
                         TextInput::make('amount')
                             ->label(fn (Get $get) => $get('type') === 'transfer' ? 'Jumlah Dikirim' : 'Jumlah')
@@ -91,11 +99,19 @@ class TransactionForm
                                 }
                             }),
  
+                        TextInput::make('destination_amount')
+                            ->label('Jumlah Diterima')
+                            ->numeric()
+                            ->prefix('Rp')
+                            ->visible(fn (Get $get) => $get('type') === 'transfer')
+                            ->helperText('Otomatis dihitung: Jumlah Dikirim - Biaya Admin'),
+
                         TextInput::make('admin_fee')
                             ->label('Biaya Admin')
                             ->numeric()
                             ->prefix('Rp')
                             ->default(0)
+                            ->columnSpanFull()
                             ->live(debounce: 500)
                             ->afterStateUpdated(function (Get $get, Set $set, $state) {
                                 $amount = (float)($get('amount') ?? 0);
@@ -104,25 +120,19 @@ class TransactionForm
                             ->visible(fn (Get $get) => $get('type') === 'transfer')
                             ->helperText('Biaya admin akan mengurangi saldo akun asal, tapi tidak ditambahkan ke tujuan.'),
  
-                        TextInput::make('destination_amount')
-                            ->label('Jumlah Diterima')
-                            ->numeric()
-                            ->prefix('Rp')
-                            ->visible(fn (Get $get) => $get('type') === 'transfer')
-                            ->helperText('Otomatis dihitung: Jumlah Dikirim - Biaya Admin'),
- 
-                        TextInput::make('description')
-                            ->label('Deskripsi')
-                            ->required()
-                            ->maxLength(255)
-                            ->placeholder('Contoh: Gaji Bulan Ini, Makan Siang, dll.'),
- 
                         TextInput::make('reference_number')
                             ->label('No. Referensi')
                             ->placeholder('Opsional')
+                            ->columnSpanFull()
                             ->maxLength(100),
+
+                        Textarea::make('notes')
+                            ->label('Catatan Tambahan')
+                            ->rows(2)
+                            ->columnSpanFull(),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
  
                 // Split Transaction Section
                 Section::make('Kategori Transaksi')
@@ -180,16 +190,9 @@ class TransactionForm
                             )
                             ->columnSpanFull(),
                     ])
+                    ->columnSpanFull()
                     ->visible(fn (Get $get) => in_array($get('type'), ['income', 'expense'])),
- 
-                Section::make('Catatan')
-                    ->schema([
-                        Textarea::make('notes')
-                            ->label('Catatan Tambahan')
-                            ->rows(2)
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsed(),
+
             ]);
     }
 }
